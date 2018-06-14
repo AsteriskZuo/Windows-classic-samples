@@ -31,6 +31,7 @@
 #include <new>  // std::nothrow
 #include "resource.h"
 #include "DataObject.h"
+#include "log.h"
 
 class CDragDropVisualsApp : public CDragDropHelper
 {
@@ -407,6 +408,41 @@ void CDragDropVisualsApp::_BeginDrag(HWND hwndDragBegin)
         {
             DWORD dwEffectResult;
             hr = SHDoDragDrop(_hdlg, pdtobj, NULL, _GetDropEffects(), &dwEffectResult);
+
+			//todo:test
+
+			FORMATETC fmte = { CF_HDROP, NULL, DVASPECT_CONTENT, -1, TYMED_HGLOBAL };
+			STGMEDIUM medium;
+			HRESULT hr = pdtobj->GetData(&fmte, &medium);
+			if (SUCCEEDED(hr))
+			{
+				UINT const count = DragQueryFile((HDROP)medium.hGlobal, -1, NULL, 0);
+				WCHAR szPath[MAX_PATH];
+				DragQueryFile((HDROP)medium.hGlobal, 0, szPath, ARRAYSIZE(szPath));
+				WCHAR szMsg[128];
+				StringCchPrintf(szMsg, ARRAYSIZE(szMsg), L"%d item(s), first item is named %s", count, szPath);
+				MessageBox(NULL, szMsg, L"", MB_OK | MB_SETFOREGROUND);
+				ReleaseStgMedium(&medium);
+			}
+
+			//FORMATETC rt = { CF_HDROP, NULL, DVASPECT_CONTENT, -1, TYMED_HGLOBAL };
+			//pdtobj->QueryGetData(&rt);
+			//if (SUCCEEDED(hr))
+			//{
+			//	STGMEDIUM medium;
+			//	HRESULT hr = pdtobj->GetData(&rt, &medium);
+			//	if (SUCCEEDED(hr))
+			//	{
+			//		UINT const count = DragQueryFile((HDROP)medium.hGlobal, -1, NULL, 0);
+			//		WCHAR szPath[MAX_PATH];
+			//		DragQueryFile((HDROP)medium.hGlobal, 0, szPath, ARRAYSIZE(szPath));
+			//		WCHAR szMsg[128];
+			//		StringCchPrintf(szMsg, ARRAYSIZE(szMsg), L"%d item(s), first item is named %s", count, szPath);
+			//		MessageBox(NULL, szMsg, L"", MB_OK | MB_SETFOREGROUND);
+			//		ReleaseStgMedium(&medium);
+			//	}
+			//}
+
             pdtobj->Release();
         }
     }
@@ -467,6 +503,7 @@ INT_PTR CDragDropVisualsApp::_DlgProc(UINT uMsg, WPARAM wParam, LPARAM /*lParam*
 
 int WINAPI wWinMain(HINSTANCE, HINSTANCE, PWSTR, int)
 {
+	init_log();
     HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
     if (SUCCEEDED(hr))
     {
@@ -478,5 +515,6 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PWSTR, int)
         }
         CoUninitialize();
     }
+	uninit_log();
     return 0;
 }
