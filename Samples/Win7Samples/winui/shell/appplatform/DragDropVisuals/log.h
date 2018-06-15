@@ -87,10 +87,10 @@ void uninit_log()
 
 void ouput_log(const std::string funname, const std::string& content)
 {
-	SPDLOG_DEBUG(g_log, "%s [=] %s", funname.data(), content.data());
+	SPDLOG_DEBUG(g_log, "{} [=] {}", funname.data(), content.data());
 }
 
-void ouput_log_w(const std::string funname, const std::wstring& content)
+void output_log_w(const std::string funname, const std::wstring& content)
 {
 	std::string c = WChar2Ansi(content.data());
 	ouput_log(funname, c);

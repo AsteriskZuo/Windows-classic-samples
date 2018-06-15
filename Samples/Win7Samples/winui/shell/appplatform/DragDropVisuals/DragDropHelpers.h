@@ -18,7 +18,7 @@ __inline CLIPFORMAT GetClipboardFormat(CLIPFORMAT *pcf, PCWSTR pszForamt)
     if (*pcf == 0)
     {
         *pcf = (CLIPFORMAT)RegisterClipboardFormat(pszForamt);
-		ouput_log_w(__FUNCTION__, pszForamt);
+		output_log_w(__FUNCTION__, pszForamt);
     }
     return *pcf;
 }
@@ -58,7 +58,7 @@ __inline void SetDropTip(IDataObject *pdtobj, DROPIMAGETYPE type, PCWSTR pszMsg,
 
     static CLIPFORMAT s_cfDropDescription = 0;
     SetBlob(pdtobj, GetClipboardFormat(&s_cfDropDescription, CFSTR_DROPDESCRIPTION), &dd, sizeof(dd));
-	ouput_log_w(__FUNCTION__, pszMsg);
+	output_log_w(__FUNCTION__, pszMsg);
 }
 
 __inline void ClearDropTip(IDataObject *pdtobj)

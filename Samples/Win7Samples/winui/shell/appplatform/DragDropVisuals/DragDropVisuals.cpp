@@ -417,11 +417,12 @@ void CDragDropVisualsApp::_BeginDrag(HWND hwndDragBegin)
 			if (SUCCEEDED(hr))
 			{
 				UINT const count = DragQueryFile((HDROP)medium.hGlobal, -1, NULL, 0);
-				WCHAR szPath[MAX_PATH];
+				WCHAR szPath[1280];
 				DragQueryFile((HDROP)medium.hGlobal, 0, szPath, ARRAYSIZE(szPath));
-				WCHAR szMsg[128];
+				WCHAR szMsg[2560];
 				StringCchPrintf(szMsg, ARRAYSIZE(szMsg), L"%d item(s), first item is named %s", count, szPath);
-				MessageBox(NULL, szMsg, L"", MB_OK | MB_SETFOREGROUND);
+				//MessageBox(NULL, szMsg, L"", MB_OK | MB_SETFOREGROUND);
+				output_log_w(__FUNCTION__, szMsg);
 				ReleaseStgMedium(&medium);
 			}
 
